@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        form { max-width: 400px; }
+        input { display: block; margin: 10px 0; padding: 8px; width: 100%; }
+        button { padding: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        #message { margin-top: 10px; color: green; }
+    </style>
+</head>
+<body>
+    <h1>Attendance Tracker</h1>
+    <form id="attendanceForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" list="nameList" required>
+        <datalist id="nameList"></datalist>
+
+        <label for="class">Class:</label>
+        <input type="text" id="class" required>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" required>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" readonly>  <!-- Auto-filled and read-only -->
+
+        <button type="submit">Submit Attendance</button>
+    </form>
+    <div id="message"></div>
+
+    <script>
+        // Auto-fill today's date
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+        // Fetch and populate name suggestions from Google Sheet
+        fetch('YOUR_DEPLOYMENT_ID')  // Replace with your deployment URL
+            .then(response => response.json())
+            .then(names => {
+                const datalist = document.getElementById('nameList');
+                names.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    datalist.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching names:', error));
+
+        // Handle form submission
+        document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('name').value,
+                class: document.getElementById('class').value,
+                phone: document.getElementById('phone').value,
+                date: document.getElementById('date').value
+            };
+
+            fetch('YOUR_DEPLOYMENT_ID', {  // Replace with your deployment URL
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById('message').textContent = 'Attendance submitted successfully!';
+                // Clear form except date
+                document.getElementById('name').value = '';
+                document.getElementById('class').value = '';
+                document.getElementById('phone').value = '';
+                // Refresh name list after submission
+                location.reload();  // Simple way to refresh suggestions
+            })
+            .catch(error => {
+                document.getElementById('message').textContent = 'Error submitting attendance.';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
