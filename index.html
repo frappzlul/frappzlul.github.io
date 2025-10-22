@@ -37,7 +37,7 @@
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
         // Fetch and populate name suggestions from Google Sheet
-        fetch('YOUR_DEPLOYMENT_ID')  // Replace with your deployment URL
+        fetch('https://script.google.com/macros/s/AKfycbyaEmnToU4N0L2wED3IY0HOZgU4e4sxfyp5I2ObaLNrpIg4ozVcCCxPWFd_40kXxzhS/exec')  // Replace with your deployment URL
             .then(response => response.json())
             .then(names => {
                 const datalist = document.getElementById('nameList');
@@ -59,7 +59,7 @@
                 date: document.getElementById('date').value
             };
 
-            fetch('YOUR_DEPLOYMENT_ID', {  // Replace with your deployment URL
+            fetch('https://script.google.com/macros/s/AKfycbyaEmnToU4N0L2wED3IY0HOZgU4e4sxfyp5I2ObaLNrpIg4ozVcCCxPWFd_40kXxzhS/exec', {  // Replace with your deployment URL
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
